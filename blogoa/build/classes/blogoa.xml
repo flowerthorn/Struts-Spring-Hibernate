@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts> 
+    <package name="admin" namespace="/" extends="struts-default">
+       <interceptors>
+             <interceptor name="ipCheck" class="com.lhx.blog.interceptor.IPInterceptor"/>
+            <interceptor name="loginCheck" class="com.lhx.blog.interceptor.LoginCheckInteceptor"/>
+           
+             <interceptor-stack name="blogoaStack">
+                <interceptor-ref name="defaultStack"/>
+                  
+                <interceptor-ref name="loginCheck"/>
+                <!--  <interceptor-ref name="ipCheck"/> -->
+              
+ 			</interceptor-stack>
+	   </interceptors>
+	   <default-interceptor-ref name="blogoaStack"/>
+		 <global-results>
+		 <result name="towelcome"  type="redirect"> 
+		     <param name="location">/welcome.jsp</param>
+		     </result>
+          <result name="404">/home/404bad.jsp</result>
+          <result name="zero" >/home/zero.jsp</result>
+          <result name="array" >/home/array.jsp</result>
+          <result name="null">/home/null.jsp</result>
+          <result name="sql">/home/sql.jsp</result>
+          <result name="ip">/home/ip.jsp</result>
+        </global-results> 
+        <global-exception-mappings>   	
+        <exception-mapping exception="java.lang.NullPointerException" result="null" />
+        <exception-mapping exception="java.lang.ArithmeticException" result="zero"/>
+		<exception-mapping exception="java.lang.ArrayIndexOutOfBoundsException" result="array" />
+		<exception-mapping exception="org.hibernate.exception.GenericJDBCException" result="sql" />      
+
+        </global-exception-mappings>
+      </package>
+        
+    <package name="welcome" namespace="/" extends="admin">
+		<action name="towelcome" class="com.lhx.blog.action.ToWelcomeAction" method="towelcome">
+			<result name="towelcome">/welcome.jsp</result>
+			<interceptor-ref name="defaultStack"/>
+		</action>
+	</package>
+	<package name="tologin" namespace="/" extends="admin">
+		<action name="tologin" class="personLoginAction" method="login">
+		    <result name="failure">/welcome.jsp</result>
+		    <result name="input">/welcome.jsp</result>
+		    <result name="success" type="redirect">/home/tohome</result>
+		    <interceptor-ref name="defaultStack"/>
+		</action>
+	</package>
+	<!-- 到系统主页的前分发配置 home.jsp -->
+	<package name="home" namespace="/home" extends="admin">
+		<action name="tohome" class="com.lhx.blog.action.HomeMainAction" method="tohome">
+			<result name="tohome">/home/home.jsp</result>
+		</action>
+		<action name="logout" class="com.lhx.blog.action.HomeMainAction" method="tohome">
+			<result name="tohome">/home/home.jsp</result>
+		</action>
+	</package>
+	<!-- 个人信息操作的配置 -->
+	<package name="person" namespace="/person" extends="admin">
+	    	<global-results>
+           		 <result name="updatesuccess" type="dispatcher">
+           		     /person/updatesuccess.jsp
+           		  </result>
+       		 </global-results>
+		<action name="toupdatedata" class="personFrontAction" method="toupdatedata">
+		    <result name="toupdatedata" type="dispatcher">/person/updatedata.jsp</result>
+		</action>
+		<action name="toviewdata"  class="personFrontAction" method="toviewdata">
+		    <result name="toviewdata" type="dispatcher">/person/viewdata.jsp</result>	
+		    <result name="toviewdatawithphoto" type="dispatcher">/person/viewdatawithphoto.jsp</result>	    
+		</action>
+		<action name="toupdateps" class="personFrontAction" method="toupdateps">
+		      <result name="toupdateps" type="dispatcher">/person/updateps.jsp</result>
+		</action>
+		<action name="toupdatephoto" class="personFrontAction" method="toupdatephoto">
+		      <result name="toupdatephoto" type="dispatcher">/person/updatephoto.jsp</result>		  
+		</action>
+		<action name="updatedata" class="personProcessAction" method="updatedata">
+		    <result name="input" type="dispatcher">/person/updatedata.jsp</result>
+		</action>
+		<action name="updateps" class="personProcessAction" method="updateps">
+		     <result name="input" type="dispatcher">/person/updateps.jsp</result>
+		</action>
+		<action name="updatephoto" class="personPhotoUploadAction" method="updatephoto">
+			 <result name="input" type="dispatcher">/person/updatephoto.jsp</result>
+			<param name="uploadDir">/WEB-INF/UploadFiles</param>
+			<interceptor-ref name="defaultStack">
+			    <param name="fileUpload.allowedTypes">image/png,image/gif,image/jpg</param>
+			    <param name="fileUpload.maximumSize">800000</param>
+			</interceptor-ref> 
+		</action>
+		<action name="showphoto" class="personPhotoDownloadAction" method="show" >
+			<result name="sucsess" type="stream">
+			    <param name="contentType">${pm.photoContentType}</param>
+			    <param name="inputName">inputStream</param>
+			    <param name="contentDisposition">attachment;filename=${pm.photoFilename}</param>
+			</result>	
+		</action>
+	</package>
+	<package name="category" namespace="/category" extends="admin">
+	    <global-results>
+           		 <result name="success" type="dispatcher">
+           		     /category/success.jsp
+           		  </result>
+       	</global-results>
+     <action name="toadd" class="categoryFrontAction" method="toadd">
+		 <result name="toadd" type="dispatcher">/category/add.jsp</result>
+	</action>
+	<action name="toview" class="categoryFrontAction" method="toview">
+	     <result name="toview" type="dispatcher">/category/view.jsp</result>
+	</action>	
+	<action name="toselect" class="categoryFrontAction" method="toselect">
+	     <result name="toselect" type="dispatcher">/category/select.jsp</result>
+	</action>
+	<action name="selectbycno" class="categoryProcessAction" method="selectbycno">
+	 <result name="ok" type="dispatcher">/category/select.jsp</result>
+	</action>
+	 <action name="tomodify" class="categoryFrontAction" method="tomodify">
+		 <result name="tomodify" type="dispatcher">/category/modify.jsp</result>
+	</action>
+	<action name="add" class="categoryProcessAction" method="add">
+	</action>
+	<action name="delete" class="categoryFrontAction" method="delete">
+	</action>
+	<action name="modify" class="categoryProcessAction" method="modify">
+	</action>
+	<action name="toviewArticleByCno" class="categoryFrontAction" method="toviewArticleByCno">
+	    <result name="toviewArticleByCno" type="dispatcher">/category/viewarticlebycno.jsp</result>
+	</action>  
+	</package>
+	
+	<package name="tag" namespace="/tag" extends="admin">
+	    <global-results>
+           <result name="success" type="dispatcher">
+           		     /tag/success.jsp
+           </result>
+       	</global-results>
+     <action name="toadd" class="tagFrontAction" method="toadd">
+		 <result name="toadd" type="dispatcher">/tag/add.jsp</result>
+	</action>
+	<action name="add" class="tagProcessAction" method="add">
+	</action>
+	<action name="toview" class="tagFrontAction" method="toview">
+	     <result name="toview" type="dispatcher">/tag/view.jsp</result>
+	</action>	
+	 <action name="tomodify" class="tagFrontAction" method="tomodify">
+		 <result name="tomodify" type="dispatcher">/tag/modify.jsp</result>
+	</action>
+	<action name="modify" class="tagProcessAction" method="modify">
+	</action>
+	<action name="delete" class="tagFrontAction" method="delete">
+	</action> 
+	<action name="toviewArticleByTno" class="tagFrontAction" method="toviewArticleByTno">
+	    <result name="toviewArticleByTno" type="dispatcher">/tag/viewarticlebytno.jsp</result>
+	</action>
+	</package>
+	
+		
+	<package name="article" namespace="/article" extends="admin">
+	    <global-results>
+           <result name="success" type="dispatcher">
+           		     /article/success.jsp
+           </result>
+       	</global-results>
+     <action name="toadd" class="articleToAddAction" method="toadd">
+		 <result name="toadd" type="dispatcher">/article/add.jsp</result>
+	</action>
+	<action name="add" class="articleAddAction" method="add">
+	</action>
+	<action name="toview" class="articleToViewAction" method="toview">
+	     <result name="toview" type="dispatcher">/article/view.jsp</result>
+	</action>	
+	 <action name="tomodify" class="articleToModify" method="tomodify">
+		 <result name="tomodify" type="dispatcher">/article/modify.jsp</result>
+	</action>
+	<action name="modify" class="articleModifyAction" method="modify">     
+	</action>
+	<action name="delete" class="articleDeleteAction" method="delete">
+	</action>
+	<action name="viewbypages" class="articleViewByPages" method="articleViewByPages">
+	    <result name="viewbypages" type="dispatcher">/article/viewbypages.jsp</result>
+	</action> 
+
+	</package>
+</struts>

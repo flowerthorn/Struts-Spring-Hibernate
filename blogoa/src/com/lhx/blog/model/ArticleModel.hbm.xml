@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ Hibernate, Relational Persistence for Idiomatic Java
+  ~
+  ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later.
+  ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping  package="com.lhx.blog.model">
+
+    <class name="ArticleModel" table="Article">
+        <id name="ano" column="ano">
+            <generator class="identity"/>
+        </id>
+       <!-- 映射多对一关联关系 -->
+        <many-to-one name="category" column="cno" 
+            class="CategoryModel" lazy="false" />
+         <property name="title" column="title"/>
+          <property name="date" column="date"/>
+         <property name="content" column="content" type="text"/>
+		<!-- 映射多对多关联关系 -->
+		 <set name="tags" table="ArticleTag" >
+        	<key column="ano"/>
+        	<many-to-many column="tno" class="TagModel" />
+        </set>
+        
+        <!-- 映射一对多关联关系 -->
+		<!--  <set name="recommendedArticles" table="Recommended">
+        	<key column="ano"/>
+        	<one-to-many class="RecommendedModel" />	
+        </set>    -->
+    </class>
+</hibernate-mapping>

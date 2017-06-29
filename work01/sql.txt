@@ -1,0 +1,8 @@
+create database CITYINFO
+create table PRODUCT(
+ PNO Int(10) primary key auto_increment,
+ PCODE varchar(50),
+ PNAME varchar(50),
+ PRICE decimal(12,2)
+)
+select * from PRODUCT

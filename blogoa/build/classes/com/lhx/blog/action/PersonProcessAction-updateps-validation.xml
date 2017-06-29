@@ -1,0 +1,29 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.3//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
+<validators>
+    <field name="pm.mypassword">
+        <field-validator type="requiredstring">
+            <message>密码不能为空.</message>
+        </field-validator>
+         <field-validator type="stringlength"  short-circuit="true">
+         	<param name="minLength">6</param>
+		    <param name="maxLength">12</param>
+		     <message>密码长度应在6到12位之间.</message>
+        </field-validator>
+    </field>
+     <field name="repassword">
+        <field-validator type="requiredstring">
+            <message>确认密码不能为空.</message>
+        </field-validator>
+         <field-validator type="stringlength"  short-circuit="true">
+         	<param name="minLength">6</param>
+		    <param name="maxLength">12</param>
+		     <message>确认密码长度应在6到12位之间.</message>
+        </field-validator>
+    </field>
+    <validator type="expression"> 
+          <param name="expression">pm.mypassword==repassword</param>
+          <message>密码和确认密码不一致</message> 
+	</validator> 
+</validators>

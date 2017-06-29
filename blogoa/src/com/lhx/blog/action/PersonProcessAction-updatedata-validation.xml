@@ -1,0 +1,39 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.3//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
+<validators>
+    <field name="pm.myname">
+        <field-validator type="requiredstring">
+            <message>用户名不能为空.</message>
+        </field-validator>
+    </field>
+    <field name="pm.age">
+        <field-validator type="conversion"  short-circuit="true">
+            <message>年龄必须是一个数字.</message>
+        </field-validator>
+        <field-validator type="required"  short-circuit="true">
+            <message>年龄不能为空.</message>
+        </field-validator>
+         <field-validator type="int">
+         	<param name="min">18</param>
+		    <param name="max">60</param>
+		     <message>年龄必须在${min}至${max}范围内.</message>
+        </field-validator>
+    </field>
+    <field name="pm.joindate">
+        <field-validator type="conversion"  short-circuit="true">
+            <message>加入日期不是一个合法日期.</message>
+        </field-validator>
+         <field-validator type="date">
+         	<param name="min">2017-06-20</param>
+		    <param name="max">2057-01-01</param>
+		     <message>加入日期不在合法范围内.</message>
+        </field-validator>
+    </field>
+    <field name="pm.mail">
+         <field-validator type="email">
+		     <message>邮箱格式不正确.</message>
+        </field-validator>
+    </field>
+
+</validators>
